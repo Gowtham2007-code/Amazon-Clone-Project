@@ -1,4 +1,4 @@
-import {cart, removeFromCart} from '../data/cart.js';
+import {cart, removeFromCart, updateDelivaryOption} from '../data/cart.js';
 import {products} from '../data/products.js';
 import {formatCurrency} from './utils/money.js';
 import {delivaryOptions} from '../data/deliveryOptions.js'
@@ -84,10 +84,14 @@ function delivaryOptionsHTML(matchingProduct, cartItem)
             'days'
         );
         const dateString = delivaryDate.format('dddd, MMMM d');
-        const priceString = delivaryOption.priceCents === 0 ? 'Free' : `$${formatCurrency(delivaryOption.priceCents)} - `
-        const isChecked = delivaryOption.id === cartItem.delivaryOptionId
+        const priceString = delivaryOption.priceCents === 0 ? 'Free' : `$${formatCurrency(delivaryOption.priceCents)} - `;
+
+        const isChecked = delivaryOption.id === cartItem.delivaryOptionId;
+
         html += `
-            <div class="delivery-option">
+            <div class="delivery-option js-delivery-option"
+                data-product-id="${matchingProduct.id}"
+                data-delivary-option-id="${delivaryOption.id}">
                 <input type="radio"
                 ${isChecked ? 'checked' : ''}
                 class="delivery-option-input"
@@ -118,3 +122,10 @@ document.querySelectorAll('.js-delete-link')
         });
     });
 
+document.querySelectorAll('.js-delivery-option')
+  .forEach((element) => {
+    element.addEventListener('click', () => {
+        const {productId, delivaryOptionId} = element.dataset;
+        updateDelivaryOption(productId, delivaryOptionId);
+    });
+  });
