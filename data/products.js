@@ -716,4 +716,6 @@ export function loadProducts(fun) {
   xhr.send();
 }
 
-loadProducts();
+loadProducts(() => {
+  console.log('products loaded');
+});
